@@ -10,6 +10,10 @@ Install requirements with `pip3 install -r requirements.txt`
 
 On first run, the underlying solver library needs to populate some quite large lookup tables. This may take half an hour or more.
 
+<img src="example.png" width="800" height="400">
+
+*example program output graph*
+
 ## Usage
 usage: `characterize.py [-h] [-n] [-f FULLCSV] [-s SUMMARYCSV] [--minDepth MINDEPTH] [--maxDepth MAXDEPTH] iterations timeSecondsPerMove`
 
