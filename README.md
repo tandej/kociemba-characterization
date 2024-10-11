@@ -2,6 +2,8 @@
 
 Proof-of-concept / requirement-setting code for a future project (*not hard to guess what it is*)
 
+99% of the credit for this should go to Herbert Kociemba's [solver algorithm and supporting python libraries](https://github.com/hkociemba/RubiksCube-TwophaseSolver/tree/master). Without it, it would be a far-fetched dream to solve 70,000 Rubik's cubes to less than 24 moves each in 90 minutes on 2019 mid-tier laptop hardware while the user plays Disco Elysium at the same time or something.
+
 Primarily an aid in selecting what goals the solver should have set (on specific compute hardware), to optimize for total (solve + move) time.
 
 Install requirements with `pip3 install -r requirements.txt`
