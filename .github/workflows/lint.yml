@@ -1,0 +1,17 @@
+on: [push, pull_request]
+
+jobs:
+  format:
+    name: Python Black Format
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: cytopia/docker-black@0.8
+  lint:
+    name: Python Pylint Lint
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    - uses: cclauss/GitHub-Action-for-pylint@master
+      with:
+        args: pip install -r requirements.txt ; pylint **/*.py --disable=C0301,C0103,C0116,C0114
