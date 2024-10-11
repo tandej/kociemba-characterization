@@ -119,30 +119,31 @@ def entryPoint(
         numberSamples: int = 0
 
         with tqdm(range(iterations)) as progressBar:
-            cube.randomize()
+            for i in progressBar:
+                cube.randomize()
 
-            stats = getSolveStats(
-                cube.to_facelet_cube().to_string(), depth, timeoutSeconds
-            )
-
-            runningTimeSum += stats[1]
-            solveTimeSequence.append(stats[1] * 1000)
-            runningDepthSum += stats[0]
-            solveMovesSequence.append(stats[0])
-
-            if stats[0] <= depth:
-                numberGoalHits += 1
-
-            numberSamples += 1
-
-            progressBar.set_postfix(
-                meanTime=str(
-                    round((runningTimeSum / numberSamples) * 1000, floatRoundPrecision)
+                stats = getSolveStats(
+                    cube.to_facelet_cube().to_string(), depth, timeoutSeconds
                 )
-                + "ms",
-                meanDepth=float(runningDepthSum) / numberSamples,
-                goalHitPct=(float(numberGoalHits) / numberSamples) * 100,
-            )
+
+                runningTimeSum += stats[1]
+                solveTimeSequence.append(stats[1] * 1000)
+                runningDepthSum += stats[0]
+                solveMovesSequence.append(stats[0])
+
+                if stats[0] <= depth:
+                    numberGoalHits += 1
+
+                numberSamples += 1
+
+                progressBar.set_postfix(
+                    meanTime=str(
+                        round((runningTimeSum / numberSamples) * 1000, floatRoundPrecision)
+                    )
+                    + "ms",
+                    meanDepth=float(runningDepthSum) / numberSamples,
+                    goalHitPct=(float(numberGoalHits) / numberSamples) * 100,
+                )
 
         timeStats = getSequenceStats(solveTimeSequence)
         moveStats = getSequenceStats(solveMovesSequence)
