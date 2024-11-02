@@ -23,7 +23,7 @@ positional arguments:
 
   `iterations`         | number of cubes to solve per goal depth
 
-  `timeSecondsPerMove` | time of a 180deg turn in seconds, used for plotting time estimates
+  `timeSecondsPerMove` | time of a 180deg turn in seconds, used for plotting time estimates (worst-case)
 
 options:
 

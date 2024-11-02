@@ -168,13 +168,21 @@ def entryPoint(
 
     characterizeEndTime = time.time()
 
+    humanRecord = 3130  # ms
+
     combinedTimes = []
     combinedMaxTimes = []
+
+    solveTimeTargetLine = []
 
     for i in range(0, len(goalDepths)):
         combinedTimes.append((meanDepth[i] * (timeSecondsPerMove * 1000)) + meanTime[i])
         combinedMaxTimes.append(
             (maxDepth[i] * (timeSecondsPerMove * 1000)) + maxTime[i]
+        )
+
+        solveTimeTargetLine.append(
+            humanRecord - (maxDepth[i] * timeSecondsPerMove * 1000)
         )
 
     fig, axes = plt.subplots(1, 3, sharex=True)
@@ -184,8 +192,16 @@ def entryPoint(
 
     axes[1].scatter(x=goalDepths, y=meanTime, c="blue")
     axes[1].scatter(x=goalDepths, y=maxTime, c="red")
-
-    humanRecord = 3130  # ms
+    axes[1].plot(
+        np.linspace(minGoalDepth, maxGoalDepth),
+        np.linspace(
+            humanRecord - (minGoalDepth * timeSecondsPerMove * 1000),
+            humanRecord - (maxGoalDepth * timeSecondsPerMove * 1000),
+        ),
+        color="green",
+        linestyle="dashed",
+    )
+    axes[1].plot(goalDepths, solveTimeTargetLine, color="green")
 
     axes[2].scatter(x=goalDepths, y=combinedTimes, c="blue")
     axes[2].scatter(x=goalDepths, y=combinedMaxTimes, c="red")
@@ -247,7 +263,7 @@ parser.add_argument(
 )
 parser.add_argument(
     "timeSecondsPerMove",
-    help="time of a 180deg turn in seconds, used for plotting time estimates",
+    help="time of a 180deg turn in seconds, used for plotting time estimates (worst case)",
     type=float,
 )
 parser.add_argument(
