@@ -10,6 +10,8 @@ Install requirements with `pip3 install -r requirements.txt`
 
 On first run, the underlying solver library needs to populate some quite large lookup tables. This may take half an hour or more.
 
+When remoted into systems to run this characterization, it is reccomended to use the options `-nr` to save the output to a file for transfer with `scp`/sftp, instead of trying to get X11/whatever forwarding working.
+
 <img src="example.png" width="800" height="400">
 
 *example program output graph*
@@ -28,6 +30,8 @@ options:
   `-h`, `--help`            | shows help message and exits
 
   `-n`, `--noPlot`          | disables output graph
+
+  `-r`, `--toFile`          | stores output graph to 'output.png' file in project root
 
   `-f` FULLCSV, `--fullCsv` FULLCSV |
                         outputs a csv file of every simulated solve to a given filepath
