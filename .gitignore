@@ -4,6 +4,9 @@ twophase/
 # generated .csv files
 *.csv
 
+# generated graph image
+output.png
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

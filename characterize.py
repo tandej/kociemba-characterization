@@ -15,6 +15,7 @@ def entryPoint(
     minGoalDepth: int,
     maxGoalDepth: int,
     noPlot: bool,
+    toFile: bool,
     fullCsv: str,
     summaryCsv: str,
 ):
@@ -138,7 +139,9 @@ def entryPoint(
 
                 progressBar.set_postfix(
                     meanTime=str(
-                        round((runningTimeSum / numberSamples) * 1000, floatRoundPrecision)
+                        round(
+                            (runningTimeSum / numberSamples) * 1000, floatRoundPrecision
+                        )
                     )
                     + "ms",
                     meanDepth=float(runningDepthSum) / numberSamples,
@@ -174,62 +177,64 @@ def entryPoint(
             (maxDepth[i] * (timeSecondsPerMove * 1000)) + maxTime[i]
         )
 
+    fig, axes = plt.subplots(1, 3, sharex=True)
+
+    axes[0].scatter(x=goalDepths, y=meanDepth, c="blue")
+    axes[0].scatter(x=goalDepths, y=maxDepth, c="red")
+
+    axes[1].scatter(x=goalDepths, y=meanTime, c="blue")
+    axes[1].scatter(x=goalDepths, y=maxTime, c="red")
+
+    humanRecord = 3130  # ms
+
+    axes[2].scatter(x=goalDepths, y=combinedTimes, c="blue")
+    axes[2].scatter(x=goalDepths, y=combinedMaxTimes, c="red")
+    axes[2].plot(
+        np.linspace(minGoalDepth - 1, maxGoalDepth + 1),
+        np.linspace(humanRecord, humanRecord),
+        color="green",
+    )
+
+    axes[0].set_ylabel("solution moves")
+    axes[1].set_ylabel("solution time (ms)")
+    axes[2].set_ylabel(
+        "combined solve time (ms) using t/move = "
+        + str(1000 * timeSecondsPerMove)
+        + "ms"
+    )
+
+    axes[0].set_xlabel("goal solution depth")
+    axes[1].set_xlabel("goal solution depth")
+    axes[2].set_xlabel("goal solution depth")
+
+    axes[2].set_xlim(minGoalDepth - 0.5, maxGoalDepth + 0.5)
+
+    axes[2].set_ylim(0, humanRecord * 1.1)
+
+    fig.legend(
+        handles=[
+            mplpatches.Patch(color="red", label="worst-case"),
+            mplpatches.Patch(color="blue", label="mean"),
+            mplpatches.Patch(color="green", label="human-record"),
+        ]
+    )
+
+    fig.set_size_inches(18, 9)
+
+    plt.figtext(
+        0.5,
+        0.01,
+        "finished characterization (n="
+        + str(iterations)
+        + ") in "
+        + str(round(characterizeEndTime - characterizeStartTime, 1))
+        + "s",
+        horizontalalignment="center",
+    )
+
+    if toFile:
+        plt.savefig("output.png")
     if not noPlot:
-        fig, axes = plt.subplots(1, 3, sharex=True)
-
-        axes[0].scatter(x=goalDepths, y=meanDepth, c="blue")
-        axes[0].scatter(x=goalDepths, y=maxDepth, c="red")
-
-        axes[1].scatter(x=goalDepths, y=meanTime, c="blue")
-        axes[1].scatter(x=goalDepths, y=maxTime, c="red")
-
-        humanRecord = 3130  # ms
-
-        axes[2].scatter(x=goalDepths, y=combinedTimes, c="blue")
-        axes[2].scatter(x=goalDepths, y=combinedMaxTimes, c="red")
-        axes[2].plot(
-            np.linspace(minGoalDepth - 1, maxGoalDepth + 1),
-            np.linspace(humanRecord, humanRecord),
-            color="green",
-        )
-
-        axes[0].set_ylabel("solution moves")
-        axes[1].set_ylabel("solution time (ms)")
-        axes[2].set_ylabel(
-            "combined solve time (ms) using t/move = "
-            + str(1000 * timeSecondsPerMove)
-            + "ms"
-        )
-
-        axes[0].set_xlabel("goal solution depth")
-        axes[1].set_xlabel("goal solution depth")
-        axes[2].set_xlabel("goal solution depth")
-
-        axes[2].set_xlim(minGoalDepth - 0.5, maxGoalDepth + 0.5)
-
-        axes[2].set_ylim(0, humanRecord * 1.1)
-
-        fig.legend(
-            handles=[
-                mplpatches.Patch(color="red", label="worst-case"),
-                mplpatches.Patch(color="blue", label="mean"),
-                mplpatches.Patch(color="green", label="human-record"),
-            ]
-        )
-
-        fig.set_size_inches(18, 9)
-
-        plt.figtext(
-            0.5,
-            0.01,
-            "finished characterization (n="
-            + str(iterations)
-            + ") in "
-            + str(round(characterizeEndTime - characterizeStartTime, 1))
-            + "s",
-            horizontalalignment="center",
-        )
-
         plt.show()
 
 
@@ -247,6 +252,13 @@ parser.add_argument(
 )
 parser.add_argument(
     "-n", "--noPlot", action="store_true", help="disables output graph", default=False
+)
+parser.add_argument(
+    "-r",
+    "--toFile",
+    action="store_true",
+    help="stores output graph to 'output.png' file in project root",
+    default=False,
 )
 parser.add_argument(
     "-f",
@@ -283,6 +295,7 @@ try:
         args.minDepth,
         args.maxDepth,
         args.noPlot,
+        args.toFile,
         args.fullCsv,
         args.summaryCsv,
     )
