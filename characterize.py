@@ -1,12 +1,14 @@
-import argparse
-import time
 import math
 from typing import Tuple, List
-
+import argparse
+import time
+import matplotlib
 import matplotlib.pyplot as plt
 import matplotlib.patches as mplpatches
 import numpy as np
 from tqdm import tqdm
+
+matplotlib.use("TkAgg")
 
 
 def entryPoint(
@@ -189,18 +191,18 @@ def entryPoint(
 
     axes[0].scatter(x=goalDepths, y=meanDepth, c="blue")
     axes[0].scatter(x=goalDepths, y=maxDepth, c="red")
+    axes[0].plot(
+        np.linspace(minGoalDepth - 1, maxGoalDepth + 1),
+        np.linspace(
+            minGoalDepth - 1,
+            maxGoalDepth + 1,
+        ),
+        color="black",
+        linestyle="dashed",
+    )
 
     axes[1].scatter(x=goalDepths, y=meanTime, c="blue")
     axes[1].scatter(x=goalDepths, y=maxTime, c="red")
-    axes[1].plot(
-        np.linspace(minGoalDepth, maxGoalDepth),
-        np.linspace(
-            humanRecord - (minGoalDepth * timeSecondsPerMove * 1000),
-            humanRecord - (maxGoalDepth * timeSecondsPerMove * 1000),
-        ),
-        color="green",
-        linestyle="dashed",
-    )
     axes[1].plot(goalDepths, solveTimeTargetLine, color="green")
 
     axes[2].scatter(x=goalDepths, y=combinedTimes, c="blue")
@@ -223,15 +225,19 @@ def entryPoint(
     axes[1].set_xlabel("goal solution depth")
     axes[2].set_xlabel("goal solution depth")
 
-    axes[2].set_xlim(minGoalDepth - 0.5, maxGoalDepth + 0.5)
+    [axis.set_xlim(minGoalDepth - 0.5, maxGoalDepth + 0.5) for axis in axes]
+    
+    axes[0].set_ylim(min(meanDepth) - 0.5, max(maxDepth) + 0.5)
 
+    axes[1].set_ylim(0, max(solveTimeTargetLine) * 1.1)
+    
     axes[2].set_ylim(0, humanRecord * 1.1)
 
     fig.legend(
         handles=[
             mplpatches.Patch(color="red", label="worst-case"),
             mplpatches.Patch(color="blue", label="mean"),
-            mplpatches.Patch(color="green", label="human-record"),
+            mplpatches.Patch(color="green", label="needed for human record"),
         ]
     )
 

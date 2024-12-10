@@ -17,6 +17,8 @@ When remoted into systems to run this characterization, it is reccomended to use
 *example program output graph*
 
 ## Usage
+Recommended to use with `pypy` to get (in my experience) about 30-40% faster solves. If doing so, you may need to install the package `pypy3-tk`.
+
 usage: `characterize.py [-h] [-n] [-f FULLCSV] [-s SUMMARYCSV] [--minDepth MINDEPTH] [--maxDepth MAXDEPTH] iterations timeSecondsPerMove`
 
 positional arguments:
